@@ -1,0 +1,231 @@
+[gd_scene load_steps=17 format=2]
+
+[ext_resource path="res://boot_splash.png" type="Texture" id=1]
+[ext_resource path="res://fonts/Title_Font.tres" type="DynamicFont" id=2]
+[ext_resource path="res://scripts/CustomBackground.gd" type="Script" id=3]
+[ext_resource path="res://scripts/ButtonSound.gd" type="Script" id=4]
+[ext_resource path="res://sounds/pop2.wav" type="AudioStream" id=5]
+[ext_resource path="res://sounds/pop1.wav" type="AudioStream" id=6]
+[ext_resource path="res://UI.tres" type="Theme" id=7]
+[ext_resource path="res://images/mute-music-on.png" type="Texture" id=8]
+[ext_resource path="res://images/mute-music-off.png" type="Texture" id=9]
+[ext_resource path="res://images/mute-sfx-on.png" type="Texture" id=10]
+[ext_resource path="res://images/mute-sfx-off.png" type="Texture" id=11]
+[ext_resource path="res://scripts/CustomToggleButton.gd" type="Script" id=12]
+[ext_resource path="res://images/mute-music-highlight.png" type="Texture" id=13]
+[ext_resource path="res://images/mute-sfx-highlight.png" type="Texture" id=14]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+uniform vec2 player_position = vec2(0.5, 0.5);
+uniform vec4 color : hint_color = vec4(0.07451, 0.141176, 0.062745, 1);
+
+uniform float MULTIPLIER = 0.8;
+uniform float SCALE = 0.4;
+uniform float SOFTNESS = 0.6;
+
+void fragment(){
+	float val = distance(vec2(UV.x , UV.y * MULTIPLIER), vec2(player_position.x , player_position.y * MULTIPLIER));
+	val = val / SCALE;
+	float vignette = smoothstep(0.2, SOFTNESS, val);
+	COLOR = vec4(color.rgb , vignette );
+}"
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+shader_param/player_position = Vector2( 0.5, 0.5 )
+shader_param/color = Color( 0.07451, 0.141176, 0.062745, 1 )
+shader_param/MULTIPLIER = 0.8
+shader_param/SCALE = 0.4
+shader_param/SOFTNESS = 0.6
+
+[node name="Menu" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2( 512, 320 )
+current = true
+
+[node name="Background" type="CanvasLayer" parent="."]
+layer = -2
+
+[node name="Image" type="Node2D" parent="Background"]
+z_index = -100
+script = ExtResource( 3 )
+texture = ExtResource( 1 )
+parallax = Vector2( 1, 1 )
+
+[node name="Vignette" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="ColorRect" type="ColorRect" parent="Vignette"]
+material = SubResource( 2 )
+margin_left = -1280.0
+margin_top = -768.0
+margin_right = 2304.0
+margin_bottom = 1408.0
+mouse_filter = 2
+color = Color( 0.0745098, 0.141176, 0.0627451, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Control" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TitleLabel" type="Label" parent="Control"]
+margin_left = 128.0
+margin_top = 118.653
+margin_right = 896.0
+margin_bottom = 246.653
+custom_fonts/font = ExtResource( 2 )
+custom_colors/font_color = Color( 0.996078, 0.980392, 0.878431, 1 )
+text = "Cave Runner"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PlayButton" type="Button" parent="Control"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = 220.818
+margin_top = 226.653
+margin_right = 476.818
+margin_bottom = 322.653
+focus_neighbour_right = NodePath("../ExitButton")
+focus_next = NodePath("../ExitButton")
+theme = ExtResource( 7 )
+text = "Play"
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+click_sound = ExtResource( 6 )
+focus_sound = ExtResource( 5 )
+
+[node name="ExitButton" type="Button" parent="Control"]
+margin_left = 523.5
+margin_top = 246.653
+margin_right = 779.5
+margin_bottom = 342.653
+focus_neighbour_left = NodePath("../PlayButton")
+focus_next = NodePath("../MuteMusic")
+focus_previous = NodePath("../PlayButton")
+theme = ExtResource( 7 )
+text = "Exit"
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+click_sound = ExtResource( 6 )
+focus_sound = ExtResource( 5 )
+
+[node name="HighScores" type="Label" parent="Control"]
+margin_left = 416.0
+margin_top = 359.551
+margin_right = 608.0
+margin_bottom = 519.551
+theme = ExtResource( 7 )
+text = "High Scores:
+0
+0
+0"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ControlsJumpLabel" type="Label" parent="Control"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_left = 32.0
+margin_top = 504.0
+margin_right = 512.0
+margin_bottom = 569.0
+theme = ExtResource( 7 )
+custom_colors/font_color = Color( 0.996078, 0.980392, 0.878431, 0.196078 )
+text = "Jump:
+Up, W, tap top half of screen"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ControlsSlideLabel" type="Label" parent="Control"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 472.0
+margin_top = 504.0
+margin_right = 952.0
+margin_bottom = 569.0
+theme = ExtResource( 7 )
+custom_colors/font_color = Color( 0.996078, 0.980392, 0.878431, 0.196078 )
+text = "Slide:
+Down, S, tap bottom half of screen"
+align = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MuteMusic" type="TextureButton" parent="Control"]
+modulate = Color( 1, 1, 1, 0.588235 )
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = 835.225
+margin_top = 20.7754
+margin_right = 899.225
+margin_bottom = 84.7754
+focus_neighbour_left = NodePath("../ExitButton")
+focus_next = NodePath("../MuteSFX")
+focus_previous = NodePath("../ExitButton")
+texture_normal = ExtResource( 8 )
+texture_pressed = ExtResource( 8 )
+texture_hover = ExtResource( 13 )
+texture_disabled = ExtResource( 9 )
+texture_focused = ExtResource( 13 )
+script = ExtResource( 12 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+click_sound = ExtResource( 6 )
+focus_sound = ExtResource( 5 )
+
+[node name="MuteSFX" type="TextureButton" parent="Control"]
+modulate = Color( 1, 1, 1, 0.588235 )
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = 899.225
+margin_top = 20.7754
+margin_right = 963.225
+margin_bottom = 84.7754
+focus_neighbour_left = NodePath("../MuteMusic")
+focus_previous = NodePath("../MuteMusic")
+texture_normal = ExtResource( 10 )
+texture_pressed = ExtResource( 10 )
+texture_hover = ExtResource( 14 )
+texture_disabled = ExtResource( 11 )
+texture_focused = ExtResource( 14 )
+script = ExtResource( 12 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+click_sound = ExtResource( 6 )
+focus_sound = ExtResource( 5 )
+[connection signal="focus_entered" from="Control/PlayButton" to="Control/PlayButton" method="on_focus"]
+[connection signal="mouse_entered" from="Control/PlayButton" to="Control/PlayButton" method="on_hover"]
+[connection signal="pressed" from="Control/PlayButton" to="Control/PlayButton" method="on_click"]
+[connection signal="focus_entered" from="Control/ExitButton" to="Control/ExitButton" method="on_focus"]
+[connection signal="mouse_entered" from="Control/ExitButton" to="Control/ExitButton" method="on_hover"]
+[connection signal="focus_entered" from="Control/MuteMusic" to="Control/MuteMusic" method="on_focus"]
+[connection signal="mouse_entered" from="Control/MuteMusic" to="Control/MuteMusic" method="on_hover"]
+[connection signal="pressed" from="Control/MuteMusic" to="Control/MuteMusic" method="_on_pressed"]
+[connection signal="focus_entered" from="Control/MuteSFX" to="Control/MuteSFX" method="on_focus"]
+[connection signal="mouse_entered" from="Control/MuteSFX" to="Control/MuteSFX" method="on_hover"]
+[connection signal="pressed" from="Control/MuteSFX" to="Control/MuteSFX" method="_on_pressed"]

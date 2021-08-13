@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/Cave Runner.wav-bc95d7e62a11ef3133731cb25ca78232.sample"
+
+[deps]
+
+source_file="res://songs/Cave Runner.wav"
+dest_files=[ "res://.import/Cave Runner.wav-bc95d7e62a11ef3133731cb25ca78232.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=true
+compress/mode=0
